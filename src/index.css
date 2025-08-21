@@ -1,3 +1,17 @@
+:root {
+  --primary-font: "Share Tech Mono", monospace;
+  --secondary-font: "digital-7";
+  --light-purple-color: rgb(193, 194, 214);
+  --orange-color: rgb(234, 158, 67);
+  --red-color: rgb(171, 57, 57);
+  --dark-gray-color: rgb(77, 77, 77);
+  --light-gray-color: rgb(102, 102, 102);
+  --blue-color: rgb(0, 69, 102);
+}
+@font-face {
+  font-family: "digital-7";
+  src: url(../src/assets/fonts/digital-7.ttf);
+}
 * {
   margin: 0;
   padding: 0;
@@ -10,5 +24,5 @@ html {
 
 body {
   font-size: 1.6rem;
-  font-family: "Russo One", sans-serif;
+  font-family: var(--primary-font);
 }
