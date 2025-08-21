@@ -2,11 +2,11 @@ import "./App.css";
 
 function App() {
   return (
-    <div className="app-wrapper">
-      <div className="calculator">
-        <div className="display">
-          <span className="expression"></span>
-          <span className="result"></span>
+    <div className="vh-100 d-flex flex-column justify-content-center align-items-center bg-light-purple">
+      <div className="calculator h-50">
+        <div className="display d-flex flex-column justify-content-center">
+          <div className="expression">333 + 333</div>
+          <div className="result">666</div>
         </div>
 
         <div className="buttons-grid">
