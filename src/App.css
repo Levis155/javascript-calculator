@@ -66,4 +66,7 @@ span a {
   .calculator {
     width: 30%;
   }
+  button{
+    font-size: 1.6rem;
+  }
 }

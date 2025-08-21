@@ -4,7 +4,7 @@ function App() {
   return (
     <div className="vh-100 d-flex flex-column justify-content-center align-items-center bg-light-purple">
       <div className="calculator h-50">
-        <div className="display d-flex flex-column justify-content-center">
+        <div className="display d-flex flex-column gap-0 justify-content-center">
           <div className="expression">333 + 333</div>
           <div className="result">666</div>
         </div>
