@@ -86,7 +86,7 @@ function App() {
       const parts = expression.split(/[\+\-x\/]/);
       const currentNumber = parts[parts.length - 1];
       if (currentNumber.includes(".")) {
-        return; 
+        return;
       }
       if (
         currentNumber === "" ||
@@ -98,8 +98,15 @@ function App() {
       }
     }
 
-    setResult(value);
+    if (["+", "-", "x", "/"].includes(value)) {
+      setExpression((prev) => prev + value);
+      setResult(value);
+      return;
+    }
+
     setExpression((prev) => prev + value);
+    const parts = (expression + value).split(/[\+\-x\/]/);
+    setResult(parts[parts.length - 1]);
   };
 
   return (
