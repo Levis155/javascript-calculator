@@ -6,6 +6,26 @@ function App() {
   const [result, setResult] = useState<number | string>(0);
   const [justEvaluated, setJustEvaluated] = useState(false);
 
+  const operands = [
+    { value: "AC", id: "clear" },
+    { value: "/", id: "divide" },
+    { value: "x", id: "multiply" },
+    { value: "7", id: "seven" },
+    { value: "8", id: "eight" },
+    { value: "9", id: "nine" },
+    { value: "-", id: "subtract" },
+    { value: "4", id: "four" },
+    { value: "5", id: "five" },
+    { value: "6", id: "six" },
+    { value: "+", id: "add" },
+    { value: "1", id: "one" },
+    { value: "2", id: "two" },
+    { value: "3", id: "three" },
+    { value: "=", id: "equals" },
+    { value: "0", id: "zero" },
+    { value: ".", id: "decimal" },
+  ];
+
   const handleClick = (value: string) => {
     console.log("click!");
     if (value === "AC") {
@@ -40,6 +60,28 @@ function App() {
       return;
     }
 
+    if (value === "0") {
+      const parts = expression.split(/[\+\-x\/]/);
+      const currentNumber = parts[parts.length - 1];
+      if (currentNumber === "0") {
+        return;
+      }
+    }
+
+    if (/^[0-9]$/.test(value)) {
+      const parts = expression.split(/[\+\-x\/]/);
+      const currentNumber = parts[parts.length - 1];
+      if (
+        currentNumber === "0" &&
+        value !== "0" &&
+        !currentNumber.includes(".")
+      ) {
+        setExpression((prev) => prev.slice(0, -1) + value);
+        setResult(value);
+        return;
+      }
+    }
+
     setResult(value);
     setExpression((prev) => prev + value);
   };
@@ -49,74 +91,62 @@ function App() {
       <div className="calculator">
         <div className="display d-flex flex-column gap-0 justify-content-center">
           <div className="expression">{expression}</div>
-          <div className="result">{result}</div>
+          <div className="result" id="display">
+            {result}
+          </div>
         </div>
 
         <div className="buttons-grid">
-          {[
-            "AC",
-            "/",
-            "x",
-            "7",
-            "8",
-            "9",
-            "-",
-            "4",
-            "5",
-            "6",
-            "+",
-            "1",
-            "2",
-            "3",
-            "=",
-            "0",
-            ".",
-          ].map((operand, i) => {
-            if (operand === "AC") {
+          {operands.map((operand, i) => {
+            if (operand.value === "AC") {
               return (
                 <button
                   key={i}
                   className="clear span-2"
+                  id={operand.id}
                   onClick={() => {
-                    handleClick(operand);
+                    handleClick(operand.value);
                   }}
                 >
-                  {operand}
+                  {operand.value}
                 </button>
               );
-            } else if (operand === "=") {
+            } else if (operand.value === "=") {
               return (
                 <button
                   key={i}
                   className="equal"
+                  id={operand.id}
                   onClick={() => {
-                    handleClick(operand);
+                    handleClick(operand.value);
                   }}
                 >
-                  {operand}
+                  {operand.value}
                 </button>
               );
-            } else if (operand === "0") {
+            } else if (operand.value === "0") {
               return (
                 <button
                   key={i}
                   className="span-2"
+                  id={operand.id}
                   onClick={() => {
-                    handleClick(operand);
+                    handleClick(operand.value);
                   }}
                 >
-                  {operand}
+                  {operand.value}
                 </button>
               );
             } else {
               return (
                 <button
                   key={i}
+                  id={operand.id}
                   onClick={() => {
-                    handleClick(operand);
+                    handleClick(operand.value);
                   }}
                 >
-                  {operand}
+                  {operand.value}
                 </button>
               );
             }
