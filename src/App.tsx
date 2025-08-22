@@ -55,6 +55,7 @@ function App() {
       }
 
       setResult(displayResult);
+      setJustEvaluated(true);
 
       return;
     }
