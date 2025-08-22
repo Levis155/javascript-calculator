@@ -1,8 +1,9 @@
-.bg-light-purple{
-    background-color: var(--light-purple-color);
+.bg-light-purple {
+  background-color: var(--light-purple-color);
 }
 .calculator {
   width: 80%;
+  height: 40%;
   padding: 0.5rem;
   background-color: black;
 }
@@ -11,7 +12,9 @@
 }
 .expression,
 .result {
+  height: 50%;
   text-align: end;
+  font-family: var(--secondary-font);
 }
 .expression {
   color: var(--orange-color);
@@ -50,9 +53,6 @@ button:hover {
   background: var(--blue-color);
   grid-row: span 2;
 }
-.zero {
-  grid-column: span 2;
-}
 span {
   margin-top: 1rem;
   font-size: 1.2rem;
@@ -64,9 +64,16 @@ span a {
 }
 @media screen and (min-width: 992px) {
   .calculator {
-    width: 30%;
+    width: 25%;
+    height: 60%;
   }
-  button{
+  .expression {
+    font-size: 1.8rem;
+  }
+  .result {
+    font-size: 2.2rem;
+  }
+  button {
     font-size: 1.6rem;
   }
 }
