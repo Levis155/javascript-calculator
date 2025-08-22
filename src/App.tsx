@@ -3,7 +3,7 @@ import "./App.css";
 
 function App() {
   const [expression, setExpression] = useState("");
-  const [result, setResult] = useState<number | string>(0);
+  const [result, setResult] = useState<number | string>("0");
   const [justEvaluated, setJustEvaluated] = useState(false);
 
   const operands = [
@@ -27,36 +27,36 @@ function App() {
   ];
 
   const handleClick = (value: string) => {
-    console.log("click!");
     if (value === "AC") {
       setExpression("");
-      setResult(0);
+      setResult("0");
       setJustEvaluated(false);
       return;
     }
 
     if (value === "=") {
-      const safeExpr = expression.replace(/x/g, "*");
-      const rawResult = Function(`return ${safeExpr}`)();
+      try {
+        const safeExpr = expression.replace(/x/g, "*");
+        const evaluation = new Function(`return ${safeExpr}`)();
+        const rounded = parseFloat(evaluation.toFixed(10));
 
-      const rounded = parseFloat(rawResult.toFixed(10));
-
-      let displayResult: string;
-      if (Number.isInteger(rounded)) {
-        displayResult = rounded.toString();
-      } else {
-        displayResult = rounded.toFixed(10).replace(/\.?0+$/, "");
-        if (
-          !displayResult.includes(".") ||
-          displayResult.split(".")[1].length < 4
-        ) {
-          displayResult = rounded.toFixed(4);
+        let displayResult: string;
+        if (Number.isInteger(rounded)) {
+          displayResult = rounded.toString();
+        } else {
+          displayResult = rounded.toString();
+          if (displayResult.includes(".")) {
+            displayResult = displayResult.replace(/\.?0+$/, "");
+          }
         }
+
+        setResult(displayResult);
+        setExpression(displayResult);
+        setJustEvaluated(true);
+      } catch (error) {
+        setResult("Error");
+        setJustEvaluated(true);
       }
-
-      setResult(displayResult);
-      setJustEvaluated(true);
-
       return;
     }
 
@@ -64,69 +64,79 @@ function App() {
       if (["+", "-", "x", "/"].includes(value)) {
         setExpression(result + value);
         setResult(value);
-        setJustEvaluated(false);
       } else {
         setExpression(value);
         setResult(value);
-        setJustEvaluated(false);
       }
+      setJustEvaluated(false);
       return;
     }
 
-    if (value === "0") {
-      const parts = expression.split(/[\+\-x\/]/);
-      const currentNumber = parts[parts.length - 1];
-      if (currentNumber === "0") {
-        return;
-      }
-    }
-
-    if (/^[0-9]$/.test(value)) {
-      const parts = expression.split(/[\+\-x\/]/);
-      const currentNumber = parts[parts.length - 1];
-      if (
-        currentNumber === "0" &&
-        value !== "0" &&
-        !currentNumber.includes(".")
-      ) {
-        setExpression((prev) => prev.slice(0, -1) + value);
-        setResult(value);
-        return;
-      }
-    }
-
     if (value === ".") {
-      const parts = expression.split(/[\+\-x\/]/);
-      const currentNumber = parts[parts.length - 1];
+      const parts = expression.split(/[+\-x/]/);
+      const currentNumber = parts[parts.length - 1] || "";
+
       if (currentNumber.includes(".")) {
         return;
       }
-      if (
-        currentNumber === "" ||
-        ["+", "-", "x", "/"].includes(expression.slice(-1))
-      ) {
+
+      if (currentNumber === "" || expression === "") {
         setExpression((prev) => prev + "0.");
         setResult("0.");
         return;
       }
+
+      setExpression((prev) => prev + ".");
+      setResult((prev) => prev + ".");
+      return;
+    }
+
+    if (/^[0-9]$/.test(value)) {
+      if (result === "0" && value === "0") {
+        return;
+      }
+
+      if (result === "0" && value !== "0") {
+        setExpression(value);
+        setResult(value);
+        return;
+      }
+
+      setExpression((prev) => prev + value);
+      setResult((prev) => {
+        if (["+", "-", "x", "/"].includes(prev as string)) {
+          return value;
+        }
+        return prev + value;
+      });
+      return;
     }
 
     if (["+", "-", "x", "/"].includes(value)) {
       const lastChar = expression.slice(-1);
+      const secondLastChar = expression.slice(-2, -1);
 
-      if (!expression && value !== "-") {
-        return;
-      }
-
-      if (["+", "-", "x", "/"].includes(lastChar)) {
-        if (value === "-" && lastChar !== "-") {
+      if (value === "-") {
+        if (["+", "x", "/"].includes(lastChar)) {
           setExpression((prev) => prev + value);
           setResult(value);
           return;
         }
+        if (lastChar === "-" && ["+", "x", "/"].includes(secondLastChar)) {
+          setExpression((prev) => prev.slice(0, -1) + value);
+          setResult(value);
+          return;
+        }
+      }
 
-        setExpression((prev) => prev.slice(0, -1) + value);
-        setResult(value);
+      if (["+", "-", "x", "/"].includes(lastChar)) {
+        if (lastChar === "-" && ["+", "x", "/"].includes(secondLastChar)) {
+          setExpression((prev) => prev.slice(0, -2) + value);
+          setResult(value);
+        } else {
+          setExpression((prev) => prev.slice(0, -1) + value);
+          setResult(value);
+        }
         return;
       }
 
@@ -134,10 +144,6 @@ function App() {
       setResult(value);
       return;
     }
-
-    setExpression((prev) => prev + value);
-    const parts = (expression + value).split(/[\+\-x\/]/);
-    setResult(parts[parts.length - 1]);
   };
 
   return (
@@ -158,9 +164,7 @@ function App() {
                   key={i}
                   className="clear span-2"
                   id={operand.id}
-                  onClick={() => {
-                    handleClick(operand.value);
-                  }}
+                  onClick={() => handleClick(operand.value)}
                 >
                   {operand.value}
                 </button>
@@ -171,9 +175,7 @@ function App() {
                   key={i}
                   className="equal"
                   id={operand.id}
-                  onClick={() => {
-                    handleClick(operand.value);
-                  }}
+                  onClick={() => handleClick(operand.value)}
                 >
                   {operand.value}
                 </button>
@@ -184,9 +186,7 @@ function App() {
                   key={i}
                   className="span-2"
                   id={operand.id}
-                  onClick={() => {
-                    handleClick(operand.value);
-                  }}
+                  onClick={() => handleClick(operand.value)}
                 >
                   {operand.value}
                 </button>
@@ -196,9 +196,7 @@ function App() {
                 <button
                   key={i}
                   id={operand.id}
-                  onClick={() => {
-                    handleClick(operand.value);
-                  }}
+                  onClick={() => handleClick(operand.value)}
                 >
                   {operand.value}
                 </button>
