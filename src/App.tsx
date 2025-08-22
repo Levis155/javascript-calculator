@@ -36,14 +36,26 @@ function App() {
     }
 
     if (value === "=") {
-      try {
-        const safeExpr = expression.replace(/x/g, "*");
-        const evalResult = Function(`return ${safeExpr}`)();
-        setResult(evalResult.toString());
-        setJustEvaluated(true);
-      } catch (error) {
-        setResult("Error");
+      const safeExpr = expression.replace(/x/g, "*");
+      const rawResult = Function(`return ${safeExpr}`)();
+
+      const rounded = parseFloat(rawResult.toFixed(10));
+
+      let displayResult: string;
+      if (Number.isInteger(rounded)) {
+        displayResult = rounded.toString();
+      } else {
+        displayResult = rounded.toFixed(10).replace(/\.?0+$/, "");
+        if (
+          !displayResult.includes(".") ||
+          displayResult.split(".")[1].length < 4
+        ) {
+          displayResult = rounded.toFixed(4);
+        }
       }
+
+      setResult(displayResult);
+
       return;
     }
 
@@ -106,7 +118,6 @@ function App() {
       }
 
       if (["+", "-", "x", "/"].includes(lastChar)) {
-  
         if (value === "-" && lastChar !== "-") {
           setExpression((prev) => prev + value);
           setResult(value);
