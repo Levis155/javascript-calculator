@@ -82,6 +82,22 @@ function App() {
       }
     }
 
+    if (value === ".") {
+      const parts = expression.split(/[\+\-x\/]/);
+      const currentNumber = parts[parts.length - 1];
+      if (currentNumber.includes(".")) {
+        return; 
+      }
+      if (
+        currentNumber === "" ||
+        ["+", "-", "x", "/"].includes(expression.slice(-1))
+      ) {
+        setExpression((prev) => prev + "0.");
+        setResult("0.");
+        return;
+      }
+    }
+
     setResult(value);
     setExpression((prev) => prev + value);
   };
