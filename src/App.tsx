@@ -99,6 +99,25 @@ function App() {
     }
 
     if (["+", "-", "x", "/"].includes(value)) {
+      const lastChar = expression.slice(-1);
+
+      if (!expression && value !== "-") {
+        return;
+      }
+
+      if (["+", "-", "x", "/"].includes(lastChar)) {
+  
+        if (value === "-" && lastChar !== "-") {
+          setExpression((prev) => prev + value);
+          setResult(value);
+          return;
+        }
+
+        setExpression((prev) => prev.slice(0, -1) + value);
+        setResult(value);
+        return;
+      }
+
       setExpression((prev) => prev + value);
       setResult(value);
       return;
